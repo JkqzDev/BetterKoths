@@ -1,0 +1,16 @@
+points: 10
+
+prefix: '&6[KingOfTheHill]'
+messages:
+  usage: '&cUsage: %usage%'
+  start-creating: '&eTo create the koth you must select 2 blocks, these will be the corners of it.'
+  invalid-time: '&cInvalid time.'
+  already-creating: '&cYou already have creator mode.'
+  already-exists: '&eKoth &6%koth% &ealready exists.'
+  doesnt-exist: '&eKoth &6%koth% &edoes not exist.'
+  win-koth: '&eKoth %name% was captured by %playerName%[%factionName%]'
+  started: '&eKoth &6%koth% &ehas been started.'
+  created: '&eKoth &6%koth% &ehas been created.'
+  deleted: '&eKoth &6%koth% &ehas been deleted.'
+  list-format: '> &c%name% &7(%minX%, %minZ%)'
+  scoreboard-format: '&l&9%name%&r&7: '

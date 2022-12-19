@@ -1,0 +1,11 @@
+name: BetterKoths
+version: 1.0
+main: betterkoths\BetterKoths
+api: 4.0.0
+permissions:
+  start.koth.command:
+    default: op
+  create.koth.command:
+    default: op
+  delete.koth.command:
+    default: op

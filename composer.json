@@ -1,0 +1,6 @@
+{
+  "require": {
+    "pocketmine/pocketmine-mp": "4.12.1",
+    "phpstan/phpstan": "1.9.3"
+  }
+}
