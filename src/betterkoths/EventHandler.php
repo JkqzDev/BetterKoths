@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace betterkoths;
 
 use betterkoths\session\SessionFactory;
-use hcf\claim\Claim;
+use kitmap\claim\Claim;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -29,7 +29,7 @@ final class EventHandler implements Listener {
             $result = $session->create($player);
 
             if ($result) {
-                $hcf_session = \hcf\session\SessionFactory::get($player);
+                $hcf_session = \kitmap\session\SessionFactory::get($player);
 
                 if ($hcf_session === null) {
                     return;
@@ -38,7 +38,7 @@ final class EventHandler implements Listener {
 
                 try {
                     $handler->prepare($player);
-                    $player->sendMessage(TextFormat::colorize('&cNow select the claim.'));
+                    $player->sendMessage(TextFormat::colorize('&aNow select the claim. Left click for first corner and Right click for second corner.'));
                 } catch (\RuntimeException) {
                     $hcf_session->stopClaimCreatorHandler();
                 }
