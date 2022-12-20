@@ -11,10 +11,6 @@ final class SessionFactory {
     /** @var Session[] */
     static private array $sessions = [];
 
-    static public function get(Player $player): ?Session {
-        return self::$sessions[$player->getXuid()] ?? null;
-    }
-
     static public function create(Player $player, string $name, int $time): void {
         self::$sessions[$player->getXuid()] = new Session($name, $time);
     }
@@ -24,5 +20,9 @@ final class SessionFactory {
             return;
         }
         unset(self::$sessions[$player->getXuid()]);
+    }
+
+    static public function get(Player $player): ?Session {
+        return self::$sessions[$player->getXuid()] ?? null;
     }
 }

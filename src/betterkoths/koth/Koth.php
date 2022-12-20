@@ -7,9 +7,9 @@ namespace betterkoths\koth;
 use betterkoths\BetterKoths;
 use betterkoths\utils\KothPosition;
 use betterkoths\utils\Language;
+use JetBrains\PhpStorm\ArrayShape;
 use kitmap\claim\Claim;
 use kitmap\session\SessionFactory;
-use JetBrains\PhpStorm\ArrayShape;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -22,14 +22,14 @@ final class Koth {
     private AxisAlignedBB $alignedBB;
 
     public function __construct(
-        private string $name,
-        private int $time,
+        private string   $name,
+        private int      $time,
         private Position $firstPosition,
         private Position $secondPosition,
-        private World $world,
-        private ?Claim $claim = null,
-        private ?Player $currentCapturer = null,
-        private int $currentTime = 0
+        private World    $world,
+        private ?Claim   $claim = null,
+        private ?Player  $currentCapturer = null,
+        private int      $currentTime = 0
     ) {
         $this->currentTime = $this->time;
 
@@ -43,8 +43,33 @@ final class Koth {
         $this->alignedBB = new AxisAlignedBB($minX, $minY, $minZ, $maxX + 1, $maxY, $maxZ + 1);
     }
 
-    public function getName(): string {
-        return $this->name;
+    static public function deserializeData(string $name, array $data): self {
+        $worldName = $data['world'];
+
+        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($worldName)) {
+            throw new RuntimeException('World not found.');
+        }
+
+        if (!Server::getInstance()->getWorldManager()->isWorldLoaded($worldName)) {
+            Server::getInstance()->getWorldManager()->loadWorld($worldName);
+        }
+        $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
+        $claim = null;
+
+        if ($data['claim'] !== null) {
+            $claimWorld = $data['claim']['world'];
+
+            if (!Server::getInstance()->getWorldManager()->isWorldGenerated($claimWorld)) {
+                throw new RuntimeException('Claim world not found.');
+            }
+
+            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($claimWorld)) {
+                Server::getInstance()->getWorldManager()->loadWorld($claimWorld);
+            }
+            $claimWorld = Server::getInstance()->getWorldManager()->getWorldByName($claimWorld);
+            $claim = new Claim(name: $name, type: Claim::KOTH, world: $claimWorld, firstPosition: Position::fromObject(KothPosition::stringToVector($data['claim']['firstPosition']), $claimWorld), secondPosition: Position::fromObject(KothPosition::stringToVector($data['claim']['secondPosition']), $claimWorld));
+        }
+        return new self($name, (int) $data['time'], Position::fromObject(KothPosition::stringToVector($data['firstPosition']), $world), Position::fromObject(KothPosition::stringToVector($data['secondPosition']), $world), $world, $claim);
     }
 
     public function getCurrentTime(): int {
@@ -104,8 +129,12 @@ final class Koth {
         $this->currentTime--;
     }
 
+    public function getName(): string {
+        return $this->name;
+    }
+
     #[ArrayShape(['time' => "int", 'firstPosition' => "string", 'secondPosition' => "string", 'world' => "string", 'claim' => "array|null"])] public function serializeData(): array {
-        $data =  [
+        $data = [
             'time' => $this->time,
             'firstPosition' => KothPosition::vectorToString($this->firstPosition),
             'secondPosition' => KothPosition::vectorToString($this->secondPosition),
@@ -122,34 +151,5 @@ final class Koth {
             ];
         }
         return $data;
-    }
-
-    static public function deserializeData(string $name, array $data): self {
-        $worldName = $data['world'];
-
-        if (!Server::getInstance()->getWorldManager()->isWorldGenerated($worldName)) {
-            throw new RuntimeException('World not found.');
-        }
-
-        if (!Server::getInstance()->getWorldManager()->isWorldLoaded($worldName)) {
-            Server::getInstance()->getWorldManager()->loadWorld($worldName);
-        }
-        $world = Server::getInstance()->getWorldManager()->getWorldByName($worldName);
-        $claim = null;
-
-        if ($data['claim'] !== null) {
-            $claimWorld = $data['claim']['world'];
-
-            if (!Server::getInstance()->getWorldManager()->isWorldGenerated($claimWorld)) {
-                throw new RuntimeException('Claim world not found.');
-            }
-
-            if (!Server::getInstance()->getWorldManager()->isWorldLoaded($claimWorld)) {
-                Server::getInstance()->getWorldManager()->loadWorld($claimWorld);
-            }
-            $claimWorld = Server::getInstance()->getWorldManager()->getWorldByName($claimWorld);
-            $claim = new Claim(name: $name, type: Claim::KOTH, world: $claimWorld, firstPosition: Position::fromObject(KothPosition::stringToVector($data['claim']['firstPosition']), $claimWorld), secondPosition: Position::fromObject(KothPosition::stringToVector($data['claim']['secondPosition']), $claimWorld));
-        }
-        return new self($name, (int) $data['time'], Position::fromObject(KothPosition::stringToVector($data['firstPosition']), $world), Position::fromObject(KothPosition::stringToVector($data['secondPosition']), $world), $world, $claim);
     }
 }

@@ -19,14 +19,6 @@ final class KothFactory {
         return self::$kothActive;
     }
 
-    static public function getAll(): array {
-        return self::$koths;
-    }
-
-    static public function get(string $name): ?Koth {
-        return self::$koths[$name] ?? null;
-    }
-
     static public function setKothActive(?Koth $kothActive = null): void {
         self::$kothActive = $kothActive;
     }
@@ -40,6 +32,10 @@ final class KothFactory {
             return;
         }
         unset(self::$koths[$name]);
+    }
+
+    static public function get(string $name): ?Koth {
+        return self::$koths[$name] ?? null;
     }
 
     static public function saveAll(): void {
@@ -63,5 +59,9 @@ final class KothFactory {
                 BetterKoths::getInstance()->getLogger()->error('Koth ' . $name . ' ' . $exception->getMessage());
             }
         }
+    }
+
+    static public function getAll(): array {
+        return self::$koths;
     }
 }

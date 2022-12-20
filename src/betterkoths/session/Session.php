@@ -13,11 +13,11 @@ use pocketmine\world\World;
 final class Session {
 
     public function __construct(
-        private string $name,
-        private int $time,
+        private string    $name,
+        private int       $time,
         private ?Position $firstPosition = null,
         private ?Position $secondPosition = null,
-        private ?World $world = null
+        private ?World    $world = null
     ) {}
 
     public function getName(): string {

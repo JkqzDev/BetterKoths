@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace betterkoths\utils;
 
 use pocketmine\math\Vector3;
-use pocketmine\world\Position;
 use RuntimeException;
 
 final class KothPosition {
