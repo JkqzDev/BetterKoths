@@ -7,6 +7,7 @@ namespace betterkoths\command;
 use betterkoths\koth\KothFactory;
 use betterkoths\session\SessionFactory;
 use betterkoths\utils\Language;
+use kitmap\claim\ClaimFactory;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -108,6 +109,7 @@ final class KothCommand extends Command {
                     $sender->sendMessage(Language::get('doesnt-exist', ['%koth%' => $args[1]]));
                     return;
                 }
+                ClaimFactory::remove($koth->getName());
                 KothFactory::remove($koth->getName());
                 $sender->sendMessage(Language::get('deleted', ['%koth%' => $koth->getName()]));
                 break;
